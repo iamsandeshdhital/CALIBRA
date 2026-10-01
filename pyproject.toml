@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calibra"
+version = "1.0.0"
+description = "Cost-Aware, Leakage-audited, Interpretable Bayesian Reliability Advisor for high-tech manufacturing"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = [
+    "predictive-maintenance",
+    "conformal-prediction",
+    "uncertainty-quantification",
+    "cost-sensitive-learning",
+    "manufacturing-ai",
+    "concept-drift",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Manufacturing",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.7"]
+serve = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["pytest>=7.4", "matplotlib>=3.7"]
+
+[project.scripts]
+calibra = "calibra.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["calibra*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = [
+    # sklearn emits a joblib threading warning under -W default that is not
+    # actionable here and would drown out real output.
+    "ignore::UserWarning:sklearn.utils.parallel",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]  # long lines are allowed in docstrings citing papers

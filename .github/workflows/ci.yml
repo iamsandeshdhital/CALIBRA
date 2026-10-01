@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .[dev]
+
+      - name: Test suite
+        run: python -m pytest tests/ -q --tb=short
+
+  # The coverage contract is the project's headline claim, so it is verified
+  # on a clean run rather than trusted from the test log.
+  headline-claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify the documented coverage claim
+        run: |
+          python -W ignore -m calibra demo --seed 7 --assets 34 --json > /dev/null
+          python -W ignore -c "
+          from calibra import CalibraConfig, CalibraRunner
+          from calibra.sim.hightech_line import HighTechLine, LineConfig
+          runs = HighTechLine(LineConfig(seed=7, n_assets=34)).generate()
+          rep = CalibraRunner(CalibraConfig(seed=7)).fit(runs).evaluate('test')
+          cov = rep['prognostic']['coverage']
+          leak = rep['data']['leakage_audit']['clean']
+          alarms = rep['trust']['calibra']['false_alarms']
+          base   = rep['trust']['median_baseline']['false_alarms']
+          assert leak, 'leakage audit failed'
+          assert abs(cov - 0.90) <= 0.10, f'coverage {cov:.3f} drifted from the documented claim'
+          assert rep['trust']['calibra']['recall'] >= 0.8, 'critical recall regressed'
+          assert alarms < base / 5, f'alarm suppression regressed: {alarms} vs {base}'
+          print(f'OK  coverage={cov:.3f}  alarms={alarms:.0f} vs baseline {base:.0f}')
+          "
+
+      - name: Upload experiment results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiments
+          path: results/
+          if-no-files-found: ignore

@@ -1,0 +1,35 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Data (regenerate with experiments/)
+data/raw/
+*.parquet
+
+# Results -- the committed JSON is kept, scratch output is not
+results/*.tmp
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Model artifacts
+*.joblib
+*.pkl
+checkpoints/

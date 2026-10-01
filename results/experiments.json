@@ -1,0 +1,237 @@
+{
+  "E1": {
+    "study": "E1 accuracy is the wrong target",
+    "calibra_rmse": 15.202837770171477,
+    "median_baseline_rmse": 30.104885737095838,
+    "calibra_mean_cost": 427.19264927245354,
+    "median_baseline_mean_cost": 524.5088559959859,
+    "paired_delta_ci95": [
+      -153.42930444054193,
+      -39.03589124435529
+    ],
+    "verdict": "CALIBRA costs less per decision than the constant-median policy"
+  },
+  "E2": {
+    "study": "E2 alarm economics under a fatigued team",
+    "sweep": [
+      {
+        "response_rate": 0.95,
+        "calibra": {
+          "alarm_rate": 0.09167015487651738,
+          "false_alarms": 42,
+          "eca_per_decision": 0.6521557136877355,
+          "recall": 1.0,
+          "tar": 0.95
+        },
+        "median_baseline": {
+          "alarm_rate": 1.0,
+          "false_alarms": 2166,
+          "eca_per_decision": 21.53306822938468,
+          "recall": 1.0,
+          "tar": 0.95
+        }
+      },
+      {
+        "response_rate": 0.85,
+        "calibra": {
+          "alarm_rate": 0.09167015487651738,
+          "false_alarms": 42,
+          "eca_per_decision": 0.6521557136877355,
+          "recall": 1.0,
+          "tar": 0.85
+        },
+        "median_baseline": {
+          "alarm_rate": 1.0,
+          "false_alarms": 2166,
+          "eca_per_decision": 21.53306822938468,
+          "recall": 1.0,
+          "tar": 0.85
+        }
+      },
+      {
+        "response_rate": 0.6,
+        "calibra": {
+          "alarm_rate": 0.09167015487651738,
+          "false_alarms": 42,
+          "eca_per_decision": 0.6521557136877355,
+          "recall": 1.0,
+          "tar": 0.6
+        },
+        "median_baseline": {
+          "alarm_rate": 1.0,
+          "false_alarms": 2166,
+          "eca_per_decision": 21.53306822938468,
+          "recall": 1.0,
+          "tar": 0.6
+        }
+      },
+      {
+        "response_rate": 0.35,
+        "calibra": {
+          "alarm_rate": 0.09167015487651738,
+          "false_alarms": 42,
+          "eca_per_decision": 0.6521557136877355,
+          "recall": 1.0,
+          "tar": 0.35
+        },
+        "median_baseline": {
+          "alarm_rate": 1.0,
+          "false_alarms": 2166,
+          "eca_per_decision": 21.53306822938468,
+          "recall": 1.0,
+          "tar": 0.35
+        }
+      }
+    ],
+    "finding": "TAR < recall for every response rate; the gap widens as the team fatigues, so plain recall overstates delivered safety."
+  },
+  "E3": {
+    "study": "E3 marginal vs group-conditional calibration",
+    "rows": [
+      {
+        "mode": "global",
+        "marginal_coverage": 0.9105238757533611,
+        "coverage_gap": 0.010523875753361112,
+        "mean_width": 17.957322074254915,
+        "conditional": {
+          "degraded+": 0.42857142857142855,
+          "healthy": 0.9493987975951904
+        },
+        "winkler": 34.188195694697875,
+        "mean_cost": 390.17442049142323
+      },
+      {
+        "mode": "mondrian",
+        "marginal_coverage": 0.923041261010663,
+        "coverage_gap": 0.02304126101066295,
+        "mean_width": 20.25084344942926,
+        "conditional": {
+          "degraded+": 0.906832298136646,
+          "healthy": 0.9243486973947895
+        },
+        "winkler": 29.50414187293235,
+        "mean_cost": 320.63139777468706
+      }
+    ],
+    "finding": "Compare the worst conditional cell against marginal coverage; a Mondrian radius trades width for conditional validity."
+  },
+  "E4": {
+    "study": "E4 silent drift and coverage expiry",
+    "coverage_clean": [
+      0.798,
+      0.991,
+      0.834,
+      0.985,
+      0.729,
+      0.718
+    ],
+    "coverage_after_shift": [
+      0.798,
+      0.991,
+      0.834,
+      0.904,
+      0.804,
+      0.67
+    ],
+    "mean_width_clean": 17.471924917676198,
+    "mean_width_shifted_unguarded": 24.833463316046814,
+    "shift_magnitude_psi_like": 0.962,
+    "inflation_factor_applied": 2.5,
+    "finding": "Input PSI rises after the shift while the conformal radius is unchanged -- the guarantee has silently expired. CALIBRA inflates the radius by min(1 + kappa*sqrt(PSI), cap) and escalates via DriftMonitor. The inflation is a safeguard, not a guarantee."
+  },
+  "E5": {
+    "study": "E5 cost-regime dependence of the policy",
+    "rows": [
+      {
+        "matrix": "fab",
+        "mean_cost": 427.19264927245354,
+        "regret_ratio": 158.76088760430747,
+        "action_mix_pct": {
+          "run": 87.6,
+          "watch": 0.2,
+          "inspect": 11.2,
+          "recipe_tune": 0.0,
+          "recover": 1.1,
+          "stop": 0.0
+        },
+        "eca_per_decision": 1.5753888610135474,
+        "tar": 0.85
+      },
+      {
+        "matrix": "bearing",
+        "mean_cost": 175.30858003010536,
+        "regret_ratio": 113.14443005181347,
+        "action_mix_pct": {
+          "run": 88.0,
+          "watch": 6.0,
+          "inspect": 4.8,
+          "recipe_tune": 0.0,
+          "recover": 1.3,
+          "stop": 0.0
+        },
+        "eca_per_decision": 0.4917210235825389,
+        "tar": 0.85
+      }
+    ],
+    "finding": "The high-asymmetry fab matrix escalates more aggressively than the bearing matrix on identical predictions, which is the correct behaviour and is impossible with a fixed probability threshold."
+  },
+  "E6": {
+    "study": "E6 leakage audit",
+    "naive_protocol": {
+      "n_windows": 8057,
+      "n_train": 5639,
+      "n_test": 2418,
+      "window_overlap_ratio": 0.9666666666666667,
+      "audit": {
+        "clean": false,
+        "n_overlapping_assets": 30,
+        "examples": [
+          "ASSET-000",
+          "ASSET-001",
+          "ASSET-002",
+          "ASSET-003",
+          "ASSET-004"
+        ]
+      }
+    },
+    "calibra_audit": {
+      "clean": true,
+      "n_overlapping_assets": 0,
+      "examples": []
+    },
+    "finding": "Stride-1 windows share w-1 of w rows, so a window-level random split places near-duplicates on both sides. CALIBRA splits by whole asset before windowing, so cross-split overlap is zero by construction and independently verified."
+  },
+  "E7": {
+    "study": "E7 seed stability",
+    "n_seeds": 3,
+    "mean_cost": {
+      "mean": 621.9862484618764,
+      "ci95": [
+        449.8531386861314,
+        724.8619033412888
+      ]
+    },
+    "coverage": {
+      "mean": 0.8744604083205155,
+      "ci95": [
+        0.8484141791044776,
+        0.8985680190930787
+      ]
+    },
+    "tar": {
+      "mean": 0.8064102564102563,
+      "ci95": [
+        0.7192307692307692,
+        0.85
+      ]
+    },
+    "mean_width": {
+      "mean": 28.794195391023255,
+      "ci95": [
+        20.958166127922972,
+        38.74344182464346
+      ]
+    },
+    "finding": "Coverage is the most stable statistic; cost is the noisiest."
+  }
+}
